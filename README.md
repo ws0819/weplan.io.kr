@@ -91,27 +91,6 @@ Client (Web / Mobile)
 
 ---
 
-## 📂 코드 구조
-
-```
-WEPLAN/
- ├─ cmd/                # 애플리케이션 진입점
- ├─ internal/
- │   ├─ api/            # REST API 핸들러
- │   ├─ grpc/           # gRPC 서비스 구현
- │   ├─ websocket/      # WebSocket 핸들러
- │   ├─ service/        # 비즈니스 로직
- │   ├─ repository/     # DB 접근 계층
- │   ├─ middleware/     # 인증/로깅 미들웨어
- │   └─ config/         # 설정 관리
- ├─ proto/              # Protobuf 정의
- ├─ docker/             # Docker 관련 설정
- ├─ Caddyfile           # Caddy 설정
- └─ docker-compose.yml
-```
-
----
-
 ## 🧠 설계 의도
 
 * **프로토콜 분리**: REST / gRPC / WebSocket을 명확히 분리하여 확장성 확보
