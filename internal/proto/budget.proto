@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb;pb";
+
+import "google/api/annotations.proto";
+
+service BudgetService {
+
+  // 예산 항목 추가
+  rpc CreateItem(CreateBudgetItemRequest)
+      returns (CreateBudgetItemResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/budget/items"
+      body: "*"
+    };
+  }
+
+  // 예산 항목 목록
+  rpc ListItems(ListBudgetItemsRequest)
+      returns (ListBudgetItemsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/{meeting_id}/budget/items"
+    };
+  }
+
+  // 총무 추가 및 변경
+  rpc CreateLeader(CreateBudgetLeaderRequest)
+      returns (CreateBudgetLeaderResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/budget/leader"
+      body: "*"
+    };
+  }
+
+  // 총무 조회
+  rpc GetLeader(GetBudgetLeaderRequest)
+      returns (GetBudgetLeaderResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/budget/leader/{meeting_id}"
+    };
+  }
+
+  // 예산 요약
+  rpc GetSummary(GetBudgetSummaryRequest)
+      returns (GetBudgetSummaryResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/{meeting_id}/budget/summary"
+    };
+  }
+
+  // ✅ Update/Delete 단일 RPC (신규)
+  rpc UDBudgetItem(UDBudgetItemRequest) returns (UDBudgetItemResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/budget/ud"
+      body: "*"
+    };
+  }  
+}
+
+// ===== messages =====
+
+message CreateBudgetItemRequest {
+  string meeting_id = 1;
+  string name       = 2;
+  string category   = 3;
+  int32  amount     = 4;
+}
+
+message CreateBudgetItemResponse {
+  string item_id = 1;
+}
+
+message ListBudgetItemsRequest {
+  string meeting_id = 1;
+}
+
+message BudgetItem {
+  string id         = 1;
+  string meeting_id = 2;
+  string name       = 3;
+  string category   = 4;
+  int32  amount     = 5;
+}
+
+message ListBudgetItemsResponse {
+  repeated BudgetItem items = 1;
+}
+
+message GetBudgetSummaryRequest {
+  string meeting_id   = 1;
+  int32  member_count = 2;
+}
+
+message GetBudgetSummaryResponse {
+  string meeting_id   = 1;
+  int32  total_amount = 2;
+  int32  member_count = 3;
+  int32  per_person   = 4;
+}
+
+message BudgetLeader {
+  string meeting_id    = 1;
+  string user_id       = 2;
+  string bank          = 3;
+  string acount        = 4;
+}
+
+message CreateBudgetLeaderRequest {
+  string meeting_id    = 1;
+  string user_id       = 2;
+  string bank          = 3;
+  string acount        = 4;
+}
+
+message CreateBudgetLeaderResponse {
+  string meeting_id = 1;
+}
+
+message GetBudgetLeaderRequest {
+  string meeting_id   = 1;
+}
+
+message GetBudgetLeaderResponse {
+  repeated BudgetLeader items = 1;
+}
+
+message UDBudgetItemRequest {
+  string meeting_id = 1; // ✅ 필수: WS room key
+  string id         = 2; // ✅ 필수: budget_item_id
+  string op         = 3; // ✅ 필수: "u" | "d"
+  UDBudgetItemFields fields = 4; // op=="u"에서만
+}
+message UDBudgetItemFields {
+  string name     = 1;
+  int32  amount   = 2;
+  string category = 3;
+}
+
+message UDBudgetItemResponse {
+  string meeting_id = 1;
+  string id         = 2;
+  string op         = 3;
+  BudgetItem item   = 4; // op=="u"에서만
+}

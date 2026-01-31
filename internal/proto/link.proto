@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb;pb";
+
+import "google/api/annotations.proto";
+
+service LinkService {
+
+  // 링크 생성 (기존 유지)
+  rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/{meeting_id}/links"
+      body: "*"
+    };
+  }
+
+  // 링크 목록 (기존 유지)
+  rpc ListLinks(ListLinksRequest) returns (ListLinksResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/{meeting_id}/links"
+    };
+  }
+
+  // Enrich (기존 유지)
+//  rpc EnrichLink(EnrichLinkRequest) returns (EnrichLinkResponse) {
+//   option (google.api.http) = {
+//    post: "/api/v1/links/enrich"
+//      body: "*"
+//   };
+//  }
+
+  // ✅ Update/Delete 단일 RPC (신규)
+  rpc UDLink(UDLinkRequest) returns (UDLinkResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/links/ud"
+      body: "*"
+    };
+  }
+}
+
+// =======================
+// Create/List (기존 + 필드 확장 유지)
+// =======================
+message CreateLinkRequest {
+  string meeting_id = 1;
+  string url        = 2;
+  string title      = 3;
+  string memo       = 4;
+  int32  rating     = 5;
+
+  string category   = 6;
+  double latitude   = 7; // 0이면 미설정으로 해석(서버 규칙)
+  double longitude  = 8; // 0이면 미설정으로 해석(서버 규칙)
+  string images     = 9; // JSON string (DB: JSONB)
+}
+
+message CreateLinkResponse {
+  string link_id = 1;
+}
+
+message ListLinksRequest {
+  string meeting_id = 1;
+  string category   = 2; // 선택: 비어있으면 전체 조회
+}
+
+message Link {
+  string id         = 1;
+  string meeting_id = 2;
+  string url        = 3;
+  string title      = 4;
+  string memo       = 5;
+  int32  rating     = 6;
+
+  string category   = 7;
+  double latitude   = 8;
+  double longitude  = 9;
+  string images     = 10; // JSON string
+}
+
+message ListLinksResponse {
+  repeated Link links = 1;
+}
+
+// =======================
+// Enrich (기존)
+// =======================
+message EnrichLinkRequest {
+  string url = 1;
+}
+
+message EnrichLinkResponse {
+  string title     = 1;
+  string thumbnail = 2;
+  double latitude  = 3;
+  double longitude = 4;
+}
+
+// =======================
+// ✅ UD (Update/Delete)
+// =======================
+message UDLinkRequest {
+  string meeting_id = 1; // ✅ 필수: WS room key
+  string id         = 2; // ✅ 필수: link_id
+  string op         = 3; // ✅ 필수: "u" | "d"
+  UDLinkFields fields = 4; // op=="u"에서만 사용
+}
+
+
+message UDLinkFields {
+  string url       = 1;
+  string title     = 2;
+  string memo      = 3;
+  int32  rating    = 4;
+
+  string category  = 5;
+  double latitude  = 6; // 0이면 무시 규칙(요구사항: 빈/미지정은 건드리지 않음)
+  double longitude = 7; // 0이면 무시
+  string images    = 8; // JSON string
+}
+
+message UDLinkResponse {
+  string meeting_id = 1;
+  string id         = 2;
+  string op         = 3;
+  Link link         = 4; // op=="u"일 때만 채울 수 있음
+}

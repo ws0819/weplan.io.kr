@@ -1,0 +1,209 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb;pb";
+
+import "google/api/annotations.proto";
+
+service MeetingService {
+
+  // ---- 모임 생성 ----
+  rpc CreateMeeting (CreateMeetingRequest) returns (CreateMeetingResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings"
+      body: "*"
+    };
+  }
+
+  // ---- 모임 목록 조회 (카드용) ----
+  rpc ListMeetings (ListMeetingsRequest) returns (ListMeetingsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/list/{user_id}"
+    };
+  }
+
+  // ---- 모임 단건 조회 (상세용) ----
+  rpc GetMeeting (GetMeetingRequest) returns (GetMeetingResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/{meetingId}"
+    };
+  }
+
+  // ---- 모임 멤버 조회 (상세용) ----
+  rpc GetMeetingMember (GetMeetingMemberRequest) returns (GetMeetingMemberResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/members/{meetingId}"
+    };
+  }
+
+
+  // ---- 초대 링크 생성 ----
+  rpc CreateInvite (CreateInviteRequest) returns (CreateInviteResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/{meetingId}/invite"
+      body: "*"
+    };
+  }
+
+  // ---- 초대 링크로 참여 ----
+  rpc JoinByInvite (JoinByInviteRequest) returns (JoinByInviteResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/join"
+      body: "*"
+    };
+  }
+
+  // ✅ Update/Delete 단일 RPC (신규)
+  // - POST /api/v1/meetings/ud
+  rpc UDMeeting (UDMeetingRequest) returns (UDMeetingResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/ud"
+      body: "*"
+    };
+  }
+
+  rpc SetTotalAmount (SetTotalAmountRequest) returns (SetTotalAmountResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/totalAmount"
+      body: "*"
+    };
+  }  
+}
+
+// ======================
+// Requests / Responses
+// ======================
+
+// ---- 모임 생성 ----
+message CreateMeetingRequest {
+  string title        = 1;
+  string start_date   = 2; // YYYY-MM-DD
+  string end_date     = 3; // YYYY-MM-DD
+  string description  = 4;
+  string thumbnail    = 5;
+  string user_id      = 6;
+}
+
+message CreateMeetingResponse {
+  string meetingId = 1;
+}
+
+// ---- 모임 목록 조회 (카드) ----
+message ListMeetingsRequest {
+  string user_id      = 1;
+}
+
+message ListMeetingsResponse {
+  repeated MeetingCard meetings = 1;
+}
+
+message MeetingCard {
+  string meetingId   = 1;
+  string title       = 2;
+  string start_date  = 3;
+  string end_date    = 4;
+  string thumbnail   = 5;
+}
+
+// ---- 모임 단건 조회 (상세) ----
+message GetMeetingRequest {
+  string meetingId = 1;
+}
+
+message GetMeetingResponse {
+  string meetingId   = 1;
+  string title       = 2;
+  string start_date  = 3;
+  string end_date    = 4;
+  string description = 5;
+  string thumbnail   = 6;
+  string images      = 7; // JSON string (DB: JSONB)
+  int32  totalAmount = 8;
+}
+
+message MeetingMember {
+  string meetingId   = 1;
+  string userId      = 2;
+  string role        = 3;
+  string images      = 4;
+}
+
+
+// ---- 모임 멤버 조회 (상세) ----
+message GetMeetingMemberRequest {
+  string meetingId = 1;
+}
+
+message GetMeetingMemberResponse {
+  repeated MeetingMember meetingmembers = 1;
+}
+
+// ---- 초대 ----
+message CreateInviteRequest {
+  string meetingId = 1;
+}
+
+message CreateInviteResponse {
+  string inviteUrl = 1;
+}
+
+message JoinByInviteRequest {
+  string token = 1;
+}
+
+message JoinByInviteResponse {
+  string meetingId = 1;
+}
+
+// ======================
+// ✅ UD (Update/Delete)
+// ======================
+
+message UDMeetingRequest {
+  // 필수 (빈값 불허)
+  string id = 1;
+
+  // 필수: "u" | "d"
+  string op = 2;
+
+  // op=="u" 일 때만 사용
+  UDMeetingFields fields = 3;
+}
+
+// 부분 업데이트용 필드 묶음
+// 규칙(서버):
+// - 필드가 존재하지 않으면: 변경 안 함
+// - 필드가 존재하지만 ""(빈문자)면: 변경 안 함 (요구사항 반영)
+// - 날짜는 "YYYY-MM-DD"일 때만 반영, ""면 무시
+message UDMeetingFields {
+  string title       = 1;
+  string description = 2;
+  string thumbnail   = 3;
+  string start_date  = 4;
+  string end_date    = 5;
+  string images      = 6; // JSON string
+}
+
+message UDMeetingResponse {
+  // 항상 id 반환
+  string id = 1;
+
+  // "u" or "d"
+  string op = 2;
+
+  // update인 경우 최신 스냅샷(선택)
+  GetMeetingResponse meeting = 3;
+}
+
+message SetTotalAmountRequest {
+  string meetingId   = 1;
+  int32  totalAmount = 2;
+}
+
+message SetTotalAmountResponse {
+  string meetingId   = 1;
+  int32  totalAmount = 2;
+  int32  memberCount = 3;
+  int32  perPerson   = 4;
+}

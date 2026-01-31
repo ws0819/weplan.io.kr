@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb;pb";
+
+import "google/api/annotations.proto";
+
+service AuthService {
+  rpc GoogleLogin(GoogleLoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/google"
+      body: "*"
+    };
+  }
+
+  // User조회
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/user/{user_id}"
+    };
+  }  
+
+  rpc KakaoLogin(KakaoLoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/kakao"
+      body: "*"
+    };
+  }
+
+}
+
+message GoogleLoginRequest {
+  string id_token = 1;
+}
+
+message LoginResponse {
+  string token   = 1;
+  string user_id = 2;
+}
+
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserResponse {
+  string id       = 1;
+  string user_id  = 2;
+  string name     = 3;
+  string email    = 4;
+  string picture  = 5;
+
+}
+
+
+message KakaoLoginRequest {
+  string id_token = 1;
+}
+
+
