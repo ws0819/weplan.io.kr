@@ -1,0 +1,21 @@
+@utility page-layout{ 
+ @apply flex-1 w-full mx-auto overflow-x-hidden
+}
+
+@utility flex-center{
+  @apply flex justify-center items-center
+}
+
+@utility mobile-view{
+  @apply max-w-160 px-4
+}
+
+@utility web-view{
+  @apply max-w-360 overflow-x-hidden
+}
+
+@utility scroll-hidden {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+

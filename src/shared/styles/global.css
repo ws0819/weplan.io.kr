@@ -1,0 +1,27 @@
+
+
+@import 'tailwindcss';
+
+@import './base.css';
+@import './theme.css';
+@import './utilities.css';
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  src: url('/fonts/NotoSansKR-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;  /* ✅ 폰트 없어도 텍스트 표시 */
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  src: url('/fonts/NotoSansKR-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--color-text);  
+  background: var(--color-background);
+}
