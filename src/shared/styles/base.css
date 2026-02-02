@@ -1,0 +1,32 @@
+@layer base{
+
+  body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  button{
+    cursor:pointer;
+  }
+
+  ::-webkit-scrollbar{
+    width:10px;
+    height:20px
+  }
+
+
+  ::-webkit-scrollbar-thumb{
+    background: #B6BAE6;
+    border-radius: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+	background-color:#9FA5DD;
+}
+
+  ::-webkit-scrollbar-corner {
+	background: transparent;
+  }
+
+}

@@ -1,0 +1,16 @@
+@theme{
+  
+  /* primary color */
+  --color-primary : #525edc;
+  --color-secondary: #929ae9;
+  --color-hover: #7780e4;
+
+  /* text color */
+  --color-text: #232323;
+  --color-darkgray:#545454;
+  --color-lightgray:#b6b6b6;
+  --color-border:#ccc;
+
+  /* background color */
+  --color-background:#ebedfb;
+}
