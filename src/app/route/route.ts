@@ -25,12 +25,20 @@ export const router = createBrowserRouter([
     Component: Login,
   },
   {
+    path: "/privacy",
+    Component: Privacy,
+  },
+  {
+    path: "/terms",
+    Component: Terms,
+  },
+  {
     path: "/invite/:token",
     Component: Invite,
   },
   {
-    path: 'auth/kakao/callback',
-    Component:KakaoCallback
+    path: "/auth/kakao/callback",
+    Component: KakaoCallback,
   },
   {
     path: "/",
@@ -44,12 +52,7 @@ export const router = createBrowserRouter([
       {
         path: "mypage",
         Component: MyPage,
-        
       },
-      { path: "privacy", Component: Privacy }, {
-          path: 'terms',
-          Component:Terms
-        },
       {
         path: "meeting/:id",
         children: [

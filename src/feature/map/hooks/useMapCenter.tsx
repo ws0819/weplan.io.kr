@@ -2,20 +2,28 @@ import { useEffect, useState } from "react";
 import type { Point } from "../type/map";
 
 
-function useMapCenter(point:Point) {
+function useMapCenter(point?:Point) {
     const DEFAULT_CENTER = { lat: 37.5642135, lng: 127.0016985 };
-    const initialCenter = point
-    ? { lat: point.latitude, lng: point.longitude }
-    : DEFAULT_CENTER;
-  
-    const [mapCenter, setMapCenter] = useState({
-      position: initialCenter,
+    const [mapCenter, setMapCenter] = useState<{
+      position: { lat: number; lng: number };
+      isPanto: boolean;
+    }>({
+      position: DEFAULT_CENTER, 
       isPanto: false,
     });
-  
+
   
  useEffect(() => {
-   if (!point) return;
+   if (!point) {
+     const setCenter = () => {
+          setMapCenter({
+            position: DEFAULT_CENTER,
+            isPanto: false,
+          });
+     }
+    setCenter()
+     return;
+   }
    const centerChamge = () => {
     setMapCenter({
       position: { lat: point.latitude, lng: point.longitude },

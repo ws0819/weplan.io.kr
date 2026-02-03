@@ -6,6 +6,7 @@ import SEO from "@/shared/components/seo/SEO";
 import Button from "@/shared/components/button/Button";
 import { useEffect } from "react";
 
+
 function Onboard() {
   const navigate = useNavigate()
   const { currentSlide,onSlideChange,startAutoPlay } = useSlide()
@@ -51,6 +52,25 @@ function Onboard() {
           >
             로그인
           </Button>
+          <div className="text-center mt-2">
+            <p className="text-xs text-gray-500 mb-1">
+              가입 시{" "}
+              <a
+                href="/terms"
+                className="text-primary hover:underline font-medium"
+              >
+                이용약관
+              </a>{" "}
+              및{" "}
+              <a
+                href="/privacy"
+                className="text-primary hover:underline font-medium"
+              >
+                개인정보처리방침
+              </a>
+              에 동의하게 됩니다
+            </p>
+          </div>
         </div>
       </div>
     </>

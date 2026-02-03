@@ -36,7 +36,7 @@ function Maps() {
         <Suspense
           fallback={
             <>
-              <div className="w-full aspect-3/4 rounded-lg overflow-hidden h-75 md:h-150 animate-pulse bg-gray-400"></div>
+              <div className="w-full aspect-3/4 rounded-lg overflow-hidden h-75 md:h-150 animate-pulse bg-gray-200"></div>
             </>
           }
         >

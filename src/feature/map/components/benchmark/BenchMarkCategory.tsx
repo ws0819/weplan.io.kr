@@ -2,7 +2,8 @@ import type { Link } from "@/feature/schdule/types/link";
 import type { Point } from "../../type/map";
 import { useParams } from "react-router";
 import { usePostBasePoint } from "../../api/usePostBasePoint";
-import { sweetSuccess } from "@/shared/utill/swir";
+import { sweetSuccess, sweetWarning } from "@/shared/utill/swir";
+import { useState } from "react";
 
 interface Props {
   data: Link[];
@@ -14,13 +15,19 @@ function BenchMarkCategory({ data, point }: Props) {
 
   const { id } = useParams();
   const { mutate } = usePostBasePoint()
+  const [selectedValue, setSelectedValue] = useState(point.linkId || "");
 
   const handleSetPoint = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
     const target = e.target.value;
     const selectLink = data.find(link => link.id === target)
+     if (!selectLink) {
+       sweetWarning("링크를 찾을 수 없습니다");
+       return;
+    }
+    
+    setSelectedValue(target);
 
-    if (!selectLink) return
     const newPoint: Point = {
       meetingId: id ?? "",
       latitude: selectLink.latitude,
@@ -42,18 +49,24 @@ function BenchMarkCategory({ data, point }: Props) {
       <h2 className="font-semibold">기준점 설정</h2>
       <select
         id="benchmark"
-        name='benchmark'
+        name="benchmark"
         className="w-full border border-border rounded-lg py-3 px-4"
-        value={point.linkId ? point.linkId : ''}
+        value={selectedValue}
         onChange={(e) => handleSetPoint(e)}
         aria-label="기준점을 선택해주세요."
       >
-        <option value="" disabled>기준점을 설정해주세요.</option>
+        <option value="" disabled>
+          기준점을 설정해주세요.
+        </option>
         {data.map((link) => (
-          <option key={ link.id } id={link.id} value={link.id}>{link.title}</option>
+          <option key={link.id} id={link.id} value={link.id}>
+            {link.title}
+          </option>
         ))}
       </select>
-      <p className="text-sm text-lightgray text-center">기준점으로부터의 거리를 계산합니다.</p>
+      <p className="text-sm text-lightgray text-center">
+        기준점으로부터의 거리를 계산합니다.
+      </p>
     </div>
   );
 }

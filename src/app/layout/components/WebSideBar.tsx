@@ -20,7 +20,7 @@ function WebSideBar() {
       </div>
     )
   }
-   const currentMember = memberData?.find((m) => m.user_id === userId);
+   const currentMember = memberData?.find((m) => m.userId === userId);
    const isOwner = currentMember?.role === "owner";
 
   return (
@@ -29,7 +29,7 @@ function WebSideBar() {
         <HeaderLogo />
         <ul className="flex flex-col gap-5 mt-20">
           {NAVITEM.map(({ to, label }) => { 
-                if (to === "settings" && isOwner) {
+                if (to === "settings" && !isOwner) {
                   return null;
                 }
            return (

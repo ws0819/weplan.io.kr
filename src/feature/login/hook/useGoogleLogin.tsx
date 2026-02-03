@@ -19,11 +19,10 @@ function useGoogleLogin() {
     }
     loadGoogle()
       .then(() => {
-        console.log("✅ Google OAuth 로드 완료");
         setIsGoogleLoaded(true);
       })
       .catch((error) => {
-        console.error("❌ Google OAuth 로드 실패:", error);
+        console.error("Google OAuth 로드 실패:", error);
       });
   }, []);
 

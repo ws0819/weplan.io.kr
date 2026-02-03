@@ -3,7 +3,6 @@ import type { Point } from "../../type/map";
 import type { Link } from "@/feature/schdule/types/link";
 import { useEffect, useState } from "react";
 import ReSettingMapBounds from "../../hooks/ReSettingMapBounds";
-
 import { loadKakaoMap } from "../../utill/loadKakaoMap";
 import MapLoadingSpinner from "./MapLoadingSpinner";
 import DistanceMarker from "./DistanceMarker";
@@ -17,7 +16,9 @@ interface Props{
 function KakaoMap({ link, point }: Props) {
   
 const [isLoaded, setIsLoaded] = useState(false);
-const mapCenter = useMapCenter(point);
+  const mapCenter = useMapCenter(point);
+  
+  console.log(point)
 
 // 카카오맵 script 동적 로딩
  useEffect(() => {
@@ -41,7 +42,7 @@ const mapCenter = useMapCenter(point);
           <DistanceMarker pointLatitude={point?.latitude ?? 0} pointLongitude={point?.longitude ?? 0} latitude={latitude} longitude={longitude} />
         </div>
       )))}
-      <ReSettingMapBounds point={ point } />
+      <ReSettingMapBounds point={point} links={ link } />
     </Map>
   );
 }

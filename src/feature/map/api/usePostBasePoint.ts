@@ -15,12 +15,16 @@ async function postBasePoint({ point }: {
 
 export const usePostBasePoint = () => {
   const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: ({ point }: { point: Point }) => postBasePoint({ point }),
-    onSuccess: (_, variable) => {
-      queryClient.invalidateQueries({
-        queryKey:['point',variable.point.meetingId]
-      })
-    }
-  })
+ return useMutation({
+   mutationFn: ({ point }: { point: Point }) => postBasePoint({ point }),
+   onSuccess: (data, variables) => {
+     const meetingId = variables.point.meetingId;
+
+     queryClient.setQueryData(["point", meetingId], data);
+
+     queryClient.invalidateQueries({
+       queryKey: ["point", meetingId],
+     });
+   },
+ });
 }
