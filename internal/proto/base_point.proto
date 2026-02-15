@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb;pb";
+
+import "google/api/annotations.proto";
+
+service BasePointService {
+
+  // 기준점 설정 / 변경
+  rpc SetBasePoint(SetBasePointRequest) returns (SetBasePointResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/meetings/base-point"
+      body: "*"
+    };
+  }
+
+  // 기준점 조회
+  rpc GetBasePoint(GetBasePointRequest) returns (GetBasePointResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/meetings/{meeting_id}/base-point"
+    };
+  }
+}
+
+message GetBasePointRequest {
+  string meeting_id = 1;
+  string category = 2;
+}
+
+message GetBasePointResponse {
+  string id         = 1;
+  string meeting_id = 2;
+  string link_id    = 3;
+  double latitude   = 4;
+  double longitude  = 5;
+  string category   = 6;
+  string title      = 8;
+}
+
+message SetBasePointRequest {
+  string meeting_id = 1;
+
+  // 둘 중 하나 이상 필요
+  double latitude   = 2;
+  double longitude  = 3;
+  string link_id    = 4;
+}
+
+message SetBasePointResponse {
+  string meeting_id = 1;
+  double latitude   = 2;
+  double longitude  = 3;
+  string link_id    = 4;
+}

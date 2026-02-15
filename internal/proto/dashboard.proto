@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "WEPLAN/internal/pb";
+
+import "google/api/annotations.proto";
+
+service DashboardService {
+  // GET /api/weplan/dashboard/{meeting_id}?member_count=4
+  rpc GetDashboard (GetDashboardRequest) returns (GetDashboardResponse) {
+    option (google.api.http) = {
+      get: "/api/weplan/dashboard/{meeting_id}"
+    };
+  }
+}
+
+message GetDashboardRequest {
+  string meeting_id = 1;
+  int32 member_count = 2; // N빵 계산용 인원 수
+}
+
+message DashboardMeeting {
+  string id = 1;
+  string title = 2;
+  string date = 3;        // ISO8601 문자열 (RFC3339)
+  string description = 4;
+  string thumbnail = 5;
+}
+
+message DashboardLink {
+  string id = 1;
+  string url = 2;
+  string title = 3;
+  string memo = 4;
+  float  rating = 5;
+}
+
+message DashboardBudgetItem {
+  string id = 1;
+  string name = 2;
+  int32 amount = 3;
+}
+
+message DashboardBudgetSummary {
+  int32 total_amount = 1;
+  int32 member_count = 2;
+  int32 per_person   = 3;
+}
+
+message GetDashboardResponse {
+  DashboardMeeting         meeting        = 1;
+  repeated DashboardLink   links          = 2;
+  repeated DashboardBudgetItem budget_items   = 3;
+  DashboardBudgetSummary   budget_summary = 4;
+}

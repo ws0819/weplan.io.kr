@@ -1,0 +1,57 @@
+// weplan.your-domain.com {
+
+//     encode gzip
+
+//     # ===========================
+//     # REST API Reverse Proxy
+//     # ===========================
+//     reverse_proxy /api/* localhost:8080 {
+//         header_up Host {host}
+//         header_up X-Real-IP {remote_host}
+//         header_up X-Forwarded-For {remote_host}
+//         header_up X-Forwarded-Proto {scheme}
+//     }
+
+//     # ===========================
+//     # WebSocket Reverse Proxy
+//     # ===========================
+//     @ws {
+//         path /ws/*
+//     }
+//     reverse_proxy @ws localhost:8080 {
+//         header_up Connection {>Connection}
+//         header_up Upgrade {>Upgrade}
+//     }
+
+//     # ===========================
+//     # Health Check
+//     # ===========================
+//     @health {
+//         path /health
+//     }
+//     reverse_proxy @health localhost:8080
+
+// }
+weplan.io.kr {
+
+    # API (REST + gRPC-Gateway)
+    handle /api/v1/* {
+        reverse_proxy http://127.0.0.1:8081
+    }
+
+    # WebSocket (반드시 별도 처리)
+    handle /ws/* {
+        reverse_proxy http://127.0.0.1:8081
+    }
+
+    # React SPA
+    handle {
+        root * /var/www/weplan
+        file_server
+        try_files {path} /index.html
+    }
+}
+
+:80 {
+    redir https://weplan.io.kr{uri}
+}
